@@ -55,14 +55,6 @@ tell it "use the dossie skill to build an analysis page" and point it at
 - Zero external runtime dependencies beyond what's loaded from CDN in the
   built page itself (React, Babel standalone, JointJS — all pinned versions).
 
-## Keeping your own fork in sync
-
-If you maintain Inditex-, company-, or project-specific additions on top of
-this skill (an extra theme, extra house-style rules), keep those in a
-separate directory alongside your checkout rather than editing this repo's
-files directly — that way `git pull` here never conflicts with your local
-layer. See the "Adaptar a um design system ou ecossistema específico" section
-of `SKILL.md` for the pattern this repo's own author uses.
 
 ## License
 
