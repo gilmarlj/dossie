@@ -1,0 +1,113 @@
+# =============================================================================
+# dossie — configuração padrão
+#
+# NÃO EDITE ESTE ARQUIVO. Ele é o fallback de fábrica.
+# Suas preferências vivem em ~/.claude/dossie.yml (global) e, por repositório,
+# em .dossie.yml na raiz do projeto. Ambos são criados por /dossie:setup.
+#
+# Precedência, do mais forte ao mais fraco:
+#   1. argumentos do comando      /dossie:analysis --theme terminal
+#   2. <repo>/.dossie.yml         preferências deste projeto
+#   3. ~/.claude/dossie.yml       suas preferências globais
+#   4. este arquivo               fábrica
+# =============================================================================
+
+# -----------------------------------------------------------------------------
+# Aparência
+# -----------------------------------------------------------------------------
+theme:
+  # Paleta. Arquivos em assets/themes/*.css — acrescentar um ali basta.
+  name: slate              # slate | terminal
+
+  # Estado inicial do switch. `system` segue o SO.
+  # Os temas são dark-first: o escuro é o :root, e o claro entra por media
+  # query ou data-theme. Com `dark` a página não pisca branco ao carregar.
+  mode: dark               # dark | light | system
+
+# -----------------------------------------------------------------------------
+# Idioma
+# -----------------------------------------------------------------------------
+language:
+  # Idioma da página. Inglês é o padrão: peças saem em inglês salvo
+  # configuração em contrário.
+  default: en              # en | pt
+
+  # true  → o deck carrega os dois idiomas e o switch EN|PT aparece
+  # false → a skill escreve só o idioma de `default`, sem switch.
+  #         Deck menor e menos tokens.
+  bilingual: false
+
+# -----------------------------------------------------------------------------
+# Saída
+# -----------------------------------------------------------------------------
+output:
+  # Raiz, relativa ao repositório atual.
+  root: docs
+
+  # Pasta por tipo de peça. A chave casa com o nome do fluxo.
+  # Nomes de pasta são SEMPRE em inglês, qualquer que seja o idioma da peça
+  # (`language.default`): eles entram em URL, git e shell. O mesmo vale para
+  # slugs e nomes de arquivo — ver `references/authoring.md`.
+  # Plural para os tipos que acumulam peças (analyses, runbooks, reviews,
+  # postmortems); `adr` fica no singular por ser a convenção consagrada de
+  # `docs/adr/NNN-assunto/`.
+  folders:
+    analysis:   analyses
+    adr:        adr
+    postmortem: postmortems
+    runbook:    runbooks
+    review:     reviews
+
+  # Como nomear a pasta da peça:
+  #   infer  — o agente escolhe pelo contexto (ex.: jpa-candidate)
+  #   ask    — propõe e pede confirmação
+  #   date   — AAAA-MM-<slug>  (bom para postmortem)
+  #   issue  — <ISSUE-KEY>-<slug> quando houver issue na branch
+  naming: infer
+
+  # Arquivos gerados dentro da pasta da peça.
+  files:
+    page:  index.html      # a página montada
+    data:  deck.jsx        # os dados que a skill escreve
+    meta:  dossie.yml      # metadados desta peça
+    assets: data           # subpasta para json/csv que alimentam gráficos
+
+  # Sobrescrever uma peça existente sem perguntar.
+  overwrite: false
+
+# -----------------------------------------------------------------------------
+# Conteúdo
+# -----------------------------------------------------------------------------
+content:
+  # Marca curta na barra superior. null = inferir do repositório.
+  brand: null
+
+  # Diagrama ER interativo (JointJS) quando a peça tem schema ou grafo.
+  interactive_diagram: true
+
+  # Rodapé de cada peça. Os marcadores {repo}, {branch} e {date} são resolvidos
+  # pela skill ao escrever o deck — não pelo builder, que só monta o HTML.
+  # A peça escreve o resultado direto no <Closing footer={[...]} />.
+  footer:
+    - "{repo} · {branch}"
+    - "gerado por dossie · {date}"
+
+# -----------------------------------------------------------------------------
+# Verificação antes de publicar
+# -----------------------------------------------------------------------------
+verify:
+  # Abrir a página uma vez e conferir console, diagramas e troca de tema.
+  preview: true
+
+  # Porta do servidor local usado nessa conferência.
+  port: 8731
+
+# -----------------------------------------------------------------------------
+# Publicação
+# -----------------------------------------------------------------------------
+publish:
+  # Publicar como Artifact quando a sessão tiver login claude.ai.
+  artifact: ask            # always | ask | never
+
+  # Fazer commit da peça gerada.
+  commit: never            # always | ask | never

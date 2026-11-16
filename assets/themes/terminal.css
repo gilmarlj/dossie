@@ -1,0 +1,89 @@
+/* =========================================================================
+   TEMA: terminal
+   @label: Terminal (alto contraste)
+   @desc:  Monoespaçada dominante, acento ciano, cantos retos. Para sala escura ou projetor fraco.
+   Alto contraste, tipografia monoespaçada dominante, acento ciano.
+   Para apresentação em sala escura ou projetor fraco.
+   ========================================================================= */
+
+:root {
+  --bg:        #08090b;
+  --surface:   #101216;
+  --surface-2: #191c22;
+  --ink:       #e8f0ee;
+  --ink-2:     #9aa6a8;
+  --ink-3:     #6c777a;
+  --line:      #262b33;
+  --line-soft: #1b1f26;
+  --code-bg:   #0b0d10;
+  --accent:    #4ddbe3;
+  --accent-bg: #0a2b2e;
+  --crit:      #ff7a86;
+  --crit-bg:   #2d1216;
+  --high:      #f0b858;
+  --high-bg:   #2d2110;
+  --med:       #9da4f5;
+  --med-bg:    #1a1c33;
+  --ok:        #5fe0a0;
+  --ok-bg:     #0d2a1c;
+
+  /* Forma */
+  --radius:       2px;
+  --radius-sm:    2px;
+  --radius-pill:  999px;
+  --border:       1px;
+  --tracking-label: .16em;
+
+  --font-sans:  "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  --font-mono:  "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  --font-serif: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+
+  color-scheme: dark;
+}
+
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    --bg:          #f4f4f2;
+    --surface:     #ffffff;
+    --surface-2:   #e8e8e4;
+    --ink:         #16161a;
+    --ink-2:       #45454d;
+    --ink-3:       #74747e;
+    --line:        #d0d0cb;
+    --line-soft:   #e0e0db;
+    --code-bg:     #ededea;
+    --accent:      #0f6b72;
+    --accent-bg:   #ddf0f1;
+    --crit:        #a01f28;
+    --crit-bg:     #f7e0e2;
+    --high:        #8a5a00;
+    --high-bg:     #f8eed6;
+    --med:         #4a4f9e;
+    --med-bg:      #e7e8f7;
+    --ok:          #1a6b3c;
+    --ok-bg:       #dcefe2;
+    color-scheme: light;
+  }
+}
+:root[data-theme="light"] {
+  --bg:          #f4f4f2;
+  --surface:     #ffffff;
+  --surface-2:   #e8e8e4;
+  --ink:         #16161a;
+  --ink-2:       #45454d;
+  --ink-3:       #74747e;
+  --line:        #d0d0cb;
+  --line-soft:   #e0e0db;
+  --code-bg:     #ededea;
+  --accent:      #0f6b72;
+  --accent-bg:   #ddf0f1;
+  --crit:        #a01f28;
+  --crit-bg:     #f7e0e2;
+  --high:        #8a5a00;
+  --high-bg:     #f8eed6;
+  --med:         #4a4f9e;
+  --med-bg:      #e7e8f7;
+  --ok:          #1a6b3c;
+  --ok-bg:       #dcefe2;
+  color-scheme: light;
+}
