@@ -1,0 +1,45 @@
+.gitignore
+  s_8e023b5ed70b1f::t_007bb214bed0b2 1-2
+LICENSE
+  s_8e023b5ed70b1f::t_d8ae41cb8d97c6 1-21
+assets/base.css
+  s_8e023b5ed70b1f::t_639f15eb826b89 1-236
+assets/themes/terminal.css
+  s_8e023b5ed70b1f::t_24e0b0cc5ea8c5 1-89
+bin/save-config.py
+  s_8e023b5ed70b1f::t_bc717ff53be669 1-93
+bin/to-zip.py
+  s_8e023b5ed70b1f::t_f3599517d03adc 1-41
+flows/adr.md
+  s_8e023b5ed70b1f::t_6e34c0b0409b4f 1-64
+flows/postmortem.md
+  s_8e023b5ed70b1f::t_0532da8525f6d8 1-69
+flows/to-zip.md
+  s_8e023b5ed70b1f::t_542d34f2b7489c 1-49
+references/components.md
+  s_11cafc7c07d083::t_df0c4ba8b1161b 1-113
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.6",
+  "base_commit_sha": "c47a9486a741409bacf10a581777431127e5b8e1",
+  "prompts": {},
+  "sessions": {
+    "s_11cafc7c07d083": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "99d68bda-47a1-4c5d-a17b-ac8ffd788bbc",
+        "model": "moya/claude-sonnet-5"
+      },
+      "human_author": "Gilmar Leal Junior <gilmarl@ext.inditex.com>"
+    },
+    "s_8e023b5ed70b1f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6837681e-f104-4421-8e01-89ebf0c96e36",
+        "model": "moya/claude-sonnet-5"
+      },
+      "human_author": "Gilmar Leal Junior <gilmarl@ext.inditex.com>"
+    }
+  }
+}
