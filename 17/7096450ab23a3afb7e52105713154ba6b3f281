@@ -1,0 +1,18 @@
+SKILL.md
+  h_40a91d631e8165 56-57,188-196
+references/authoring.md
+  h_40a91d631e8165 87-90
+references/diagram-library.md
+  h_40a91d631e8165 1-81
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.6",
+  "base_commit_sha": "177096450ab23a3afb7e52105713154ba6b3f281",
+  "prompts": {},
+  "humans": {
+    "h_40a91d631e8165": {
+      "author": "Gilmar Leal Junior <gilmarl@ext.inditex.com>"
+    }
+  }
+}
