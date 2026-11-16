@@ -84,6 +84,10 @@ quem abrir o editor tem de achar a mesma linha.
 **Diagrama mostra mecanismo, não decoração.** Se a figura não explica algo que o texto
 não explicaria igual, corte.
 
+**Tipo de diagrama que `<ErdCanvas>`/`<Box>`/`<T>`/`<Arrow>` não cobre bem**
+(fluxograma, árvore de decisão, sequência, hierarquia)? Veja
+`references/diagram-library.md` antes de inventar um shape do zero.
+
 ## Idioma
 
 **Inglês é o padrão.** Escreva a peça em inglês salvo se

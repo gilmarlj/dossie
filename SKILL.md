@@ -53,7 +53,8 @@ fábrica e diga ao usuário que `/dossie:setup` os muda.
 │  └─ themes/              slate · terminal
 ├─ references/
 │  ├─ components.md        API de cada componente
-│  └─ authoring.md         como escrever o deck.jsx
+│  ├─ authoring.md         como escrever o deck.jsx
+│  └─ diagram-library.md   onde buscar referência pra um diagrama novo
 └─ examples/
    └─ example-analysis.jsx exemplo completo (esta própria skill)
 ```
@@ -184,8 +185,15 @@ documentação, um estilo de commit):
 
 Canvas interativo: **JointJS** (`@joint/core` 4.1.3) — MPL-2.0, ~5,4k estrelas,
 via jsDelivr. O padrão de tabelas-com-colunas e links roteados vem do demo
-*Data Modeling / Database* de `jointjs.com/demos`. React 18.3.1 e Babel
-standalone vêm do cdnjs. Todos na allowlist do CSP de artifacts.
+*Entity-Relationship Diagram* de
+[`clientIO/joint-demos`](https://github.com/clientIO/joint-demos). React 18.3.1
+e Babel standalone vêm do cdnjs. Todos na allowlist do CSP de artifacts.
+
+**Precisa de um tipo de diagrama que `<ErdCanvas>` e os primitivos SVG não
+cobrem bem?** `references/diagram-library.md` tem o catálogo de demos do
+mesmo repositório confirmados como `@joint/core` livre (nunca `@joint/plus`,
+que é produto pago) — e a instrução para acrescentar um novo achado de
+diagrama ali mesmo, para a próxima peça não repetir a busca.
 
 ## Limites
 
