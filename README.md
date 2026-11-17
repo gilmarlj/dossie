@@ -46,8 +46,9 @@ tell it "use the dossie skill to build an analysis page" and point it at
 
 ## What's in the box
 
-- Two themes (`slate`, `terminal`) — see `flows/new-theme.md` to extract your
-  own from an installed design system's CSS custom properties.
+- Three themes (`slate`, `terminal`, `neobrutal`) — see `flows/new-theme.md`
+  to extract your own from an installed design system's CSS custom
+  properties.
 - A component library (`assets/components.jsx`) with an interactive
   entity-relationship canvas (JointJS), annotated code blocks with real line
   numbers, and severity chips.

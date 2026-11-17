@@ -13,6 +13,13 @@
    depois do tema e venceria por ordem com a mesma especificidade. */
 
 * { box-sizing: border-box; }
+/* Scrollbar no tom do tema (webkit + firefox) — 100% var(), sem cor literal,
+   então não precisa repetir por tema. */
+* { scrollbar-width: thin; scrollbar-color: var(--ink-3) var(--surface-2); }
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: var(--surface-2); }
+::-webkit-scrollbar-thumb { background: var(--ink-3); border: 2px solid var(--surface-2); }
+::-webkit-scrollbar-thumb:hover { background: var(--accent); }
 /* Os temas são dark-first: o :root de cada um já traz a paleta escura e
    declara color-scheme: dark, de modo que controles e scrollbars acompanhem
    sem esperar o switch. */
@@ -53,6 +60,17 @@ a { color: inherit; }
 .sw:hover .sw-side:not(.on) { color: var(--ink-2); }
 @media (prefers-reduced-motion: reduce) { .sw-side { transition: none; } }
 
+/* PrintButton: visual consistente com .sw (mesma linha de .controls), sem o
+   estado on/off — um botão de ação, não um estado persistente. */
+.print-btn {
+  font-family: var(--font-mono); font-size: 10px; font-weight: 600; letter-spacing: .06em;
+  text-transform: uppercase; padding: 5px 11px; cursor: pointer; line-height: 1;
+  background: var(--surface-2); color: var(--ink-2);
+  border: 1.5px solid var(--ink-3); border-radius: var(--radius-pill, 999px);
+}
+.print-btn:hover { color: var(--ink); }
+.print-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
 /* ---------- abertura ---------- */
 .hero { padding-block: 52px 36px; border-bottom: var(--border, 1px) solid var(--line); }
 .hero h1 { font-size: clamp(32px, 5.6vw, 54px); font-weight: 600; max-width: 17ch; }
@@ -75,11 +93,6 @@ a { color: inherit; }
 /* ---------- colunas ---------- */
 .cols { display: grid; grid-template-columns: 236px minmax(0,1fr); gap: 48px;
   padding-block: 44px 72px; align-items: start; }
-@media (max-width: 920px) {
-  .cols { grid-template-columns: 1fr; gap: 28px; }
-  .spine { position: static; max-height: none; overflow: visible; }
-  .spine-nav { display:grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); }
-}
 .spine { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 20px);
   display:flex; flex-direction: column; gap: 3px; min-width: 0;
   max-height: calc(100vh - env(safe-area-inset-top, 0px) - 40px); overflow-y: auto;
@@ -104,6 +117,48 @@ a { color: inherit; }
 .spine-txt { font-size: 12.8px; color: var(--ink-2); line-height: 1.38; min-width: 0; }
 .spine-txt b { display:block; color: var(--ink); font-weight: 600; }
 .stack { display:flex; flex-direction: column; gap: 56px; min-width: 0; }
+
+/* Breakpoint da coluna lateral — fica por ÚLTIMO de propósito: uma media
+   query que precisa vencer uma regra incondicional da MESMA especificidade
+   só consegue isso vindo depois dela no arquivo (a cascata resolve empate
+   de especificidade por ordem, não por "a media query é mais específica").
+   Um `.spine { position: static }` sem condição, escrito antes desta media
+   query, re-introduz o bug: o navegador aplicaria static e depois sticky de
+   novo, sempre a última declaração. */
+@media (max-width: 920px) {
+  .cols { grid-template-columns: 1fr; gap: 28px; }
+  .spine { position: static; max-height: none; overflow: visible; }
+  .spine-nav { display:grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); }
+}
+
+/* ---------- índice compacto: abaixo de 480px (ainda dentro da coluna única
+   do breakpoint acima) o rótulo por extenso (.spine-rank + .spine-txt) não
+   cabe sem quebrar palavra por palavra. `<Spine>` então vira uma timeline
+   vertical: um marcador quadrado/redondo (conforme --radius-pill do tema)
+   por item, ligados por uma linha, com só um rótulo curto ao lado
+   (.spine-compact — o campo opcional `compact` de cada entrada de
+   `sections`/`extra`; ver references/components.md). Sem `compact`, o item
+   cai de volta no `.spine-rank` por extenso, só que sem a timeline. ---------- */
+@media (max-width: 480px) {
+  .spine-nav.timeline { position: relative; padding-left: 18px; }
+  .spine-nav.timeline::before {
+    content: ""; position: absolute; left: 3px; top: 4px; bottom: 4px;
+    width: 2px; background: var(--line-soft);
+  }
+  .spine-nav.timeline .spine-item {
+    position: relative; padding: 4px 0 4px 10px; border: none; background: none !important;
+    align-items: center;
+  }
+  .spine-nav.timeline .spine-txt, .spine-nav.timeline .spine-rank { display: none; }
+  .spine-nav.timeline .spine-item::before {
+    content: ""; position: absolute; left: -19px; top: 50%; margin-top: -4px;
+    width: 8px; height: 8px; background: var(--ink-3); border: 1.5px solid var(--line);
+    border-radius: var(--radius-pill, 999px);
+  }
+  .spine-nav.timeline .spine-item:hover::before { background: var(--accent); }
+  .spine-compact { display: none; font-family: var(--font-mono); font-size: 10.5px; color: var(--ink-2); }
+  .spine-nav.timeline .spine-compact { display: block; }
+}
 
 /* ---------- seção ---------- */
 .finding { scroll-margin-top: calc(env(safe-area-inset-top, 0px) + 24px); min-width: 0; }
@@ -167,6 +222,22 @@ a { color: inherit; }
 .panel li { font-size: 14.5px; color: var(--ink-2); }
 .panel li code, .panel p code { font-family: var(--font-mono); font-size: .88em;
   background: var(--code-bg); padding: 1px 5px; border-radius: var(--radius-sm, 5px); color: var(--ink); }
+
+/* <Panel collapsible> renderiza <details>/<summary> em vez de <div> — abre e
+   fecha sem JS. O marcador +/− é CSS puro (sem ícone externo), some no print
+   porque todo collapsible imprime aberto (ver @media print mais abaixo). */
+.panel.collapsible > summary {
+  cursor: pointer; list-style: none; display: flex; align-items: center; gap: 8px;
+}
+.panel.collapsible > summary::-webkit-details-marker { display: none; }
+.panel.collapsible > summary::before {
+  content: "+"; font-family: var(--font-mono); font-weight: 700; color: var(--accent);
+  border: var(--border, 1px) solid var(--line); border-radius: var(--radius-sm, 5px);
+  width: 16px; height: 16px; flex: none; font-size: 13px;
+  display: flex; align-items: center; justify-content: center;
+}
+.panel.collapsible[open] > summary::before { content: "−"; }
+.panel.collapsible > summary > h4 { display: inline; }
 
 /* ---------- tabela ---------- */
 .tbl-wrap { margin-top: 12px; border: var(--border, 1px) solid var(--line); border-radius: var(--radius, 7px);
@@ -234,3 +305,24 @@ footer { border-top: var(--border, 1px) solid var(--line); padding-block: 22px 3
   font-size: 11.5px; color: var(--ink-3); display:flex; flex-wrap: wrap; gap: 6px 18px; }
 
 @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+
+/* ---------- impressão ---------- */
+/* .no-print: nunca sai no papel — use em controles que só fazem sentido na
+   tela (ThemeToggle, LangToggle, PrintButton já o levam por padrão). A regra
+   em si só existe dentro do @media print abaixo; fora dele não faz nada. */
+@media print {
+  .no-print { display: none !important; }
+  /* layout de uma coluna: a sidebar sticky não faz sentido impressa, e cada
+     tema decide a paleta clara/escura do papel — base.css não assume cor. */
+  .cols { grid-template-columns: 1fr !important; }
+  .spine { position: static !important; max-height: none !important; overflow: visible !important; }
+  .spine-nav.timeline { padding-left: 0; }
+  .spine-nav.timeline::before, .spine-nav.timeline .spine-item::before { display: none; }
+  .spine-nav.timeline .spine-txt, .spine-nav.timeline .spine-rank { display: block; }
+  .spine-compact { display: none !important; }
+  /* <Panel collapsible> sempre sai aberto — ver references/components.md
+     "Impressão": o <PrintButton> força details.open=true antes de chamar
+     window.print(); aqui só escondemos o marcador +/− fictício, que não faz
+     sentido numa página estática. */
+  .panel.collapsible > summary::before { display: none; }
+}

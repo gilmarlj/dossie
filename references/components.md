@@ -21,7 +21,7 @@ string ou par. Nos seus próprios componentes:
 Abertura. `meta` é `[{k, v}]` e vira pílulas. `board` é `[{n, k, sub, tone}]` e vira o
 placar de números; `tone` é `crit | high | med | ok` ou omitido para a cor padrão.
 
-### `<Spine sections title extra brand links />`
+### `<Spine sections title extra brand links printable />`
 A navegação inteira da peça, em coluna fixa à esquerda: marca, switches
 (`EN|PT` só quando bilíngue, `LIGHT|DARK` sempre), atalhos e índice.
 
@@ -29,11 +29,27 @@ A navegação inteira da peça, em coluna fixa à esquerda: marca, switches
 |---|---|
 | `brand` | rótulo curto no topo, ex. `"dossie"` |
 | `links` | `[{href, label}]` — atalhos fora do índice numerado (o mapa) |
-| `sections` | o array `SECTIONS` |
+| `sections` | o array `SECTIONS` — cada item aceita um `compact` opcional (ver abaixo) |
 | `title` | rótulo acima do índice, ex. `L("Findings", "Achados")` |
-| `extra` | `[{href, title, sub}]` — itens avulsos no fim do índice |
+| `extra` | `[{href, title, sub}]` — itens avulsos no fim do índice; aceita `compact` também |
+| `printable` | acrescenta o `PrintButton` na mesma linha dos switches |
 
 Rola com a página até grudar no topo; abaixo de 920px vira cabeçalho em grade.
+
+**Índice responsivo — timeline compacta.** Abaixo de 480px o rótulo por
+extenso de cada item não cabe sem quebrar palavra por palavra. Dê a cada
+entrada de `sections`/`extra` um `compact` (string curta, ex. só o ano de um
+período) e o índice vira uma timeline vertical nessa largura: um marcador por
+item — quadrado ou redondo conforme o `--radius-pill` do tema — ligados por
+uma linha, com `compact` ao lado em vez do rótulo completo. Sem `compact` em
+nenhuma entrada, o índice se comporta como sempre (nunca ativa o modo
+timeline). O item inteiro continua clicável; o texto completo permanece no
+DOM (`.spine-rank`/`.spine-txt`) para leitor de tela e para a impressão, que
+sempre reverte para o rótulo por extenso.
+
+```js
+sections = [{ id, rank: "2023 - 2026", short: "Role title", sev: "Company", compact: "2023" }]
+```
 
 ### `<Closing eyebrow title intro rows footer />`
 Fechamento. `rows` é `[{n, what, effort}]`, onde `what` aceita JSX.
@@ -62,8 +78,11 @@ aparece na coluna da esquerda.
 ### `<Fig id caption>{svg}</Fig>`
 Moldura para um SVG desenhado à mão. `id` vira o rótulo em maiúsculas (`"Fig. 2"`).
 
-### `<Panel title tone>{...}</Panel>`
+### `<Panel title tone collapsible>{...}</Panel>`
 Caixa com barra lateral. `tone="ok"` pinta a barra de verde (use para correções).
+`collapsible` renderiza `<details>`/`<summary>` nativo em vez de `<div>` — abre
+e fecha sem JS, com um marcador `+`/`−` (CSS puro). Veja "Impressão" abaixo
+para a regra sobre o que acontece com esse painel no papel.
 
 ### `<DataTable head rows wrapFirst />`
 `head` é array de strings; `rows` é array de arrays (células aceitam JSX). A primeira
@@ -111,3 +130,26 @@ rende a palavra do meio como `<code>`.
 Deixe pelo menos 90px verticais entre caixas que se ligam, senão o roteador manhattan
 cruza por cima delas. Labels longos invadem as caixas vizinhas — prefira duas ou três
 palavras.
+
+## Impressão
+
+### `<PrintButton lang />`
+Botão "PDF". Ao clicar, abre todo `<Panel collapsible>` da página e chama
+`window.print()` logo em seguida — um painel fechado imprimiria vazio, já que
+um `<details>` fechado não renderiza o conteúdo nem no papel. Normalmente não
+se usa isolado: passe `printable` ao `<Spine>` (acima), que já o posiciona na
+linha dos switches.
+
+**O que sempre some no papel (`.no-print`):** `ThemeToggle`, `LangToggle` e o
+próprio `PrintButton` — nenhum dos três faz sentido numa página estática.
+Use a classe `.no-print` em qualquer elemento seu que só sirva à tela.
+
+**O que sempre sai aberto:** todo `<Panel collapsible>` — o botão força isso
+antes de imprimir, então não escreva conteúdo opcional-de-verdade dentro de um
+painel colapsável achando que ele pode ficar fechado no PDF; ele não fica.
+
+**O que o tema controla:** a paleta impressa (clara ou escura) fica a
+critério de cada `assets/themes/*.css` — `base.css` nunca declara cor, só
+neutraliza layout (`.cols` vira uma coluna, `.spine` perde o `sticky`/scroll,
+sombras somem). Se seu tema usa sombra dura ou qualquer decoração que
+desperdiça tinta, zere-a dentro do próprio `@media print` do tema.

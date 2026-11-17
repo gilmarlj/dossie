@@ -23,8 +23,9 @@ CDN = """<script src="https://cdn.jsdelivr.net/npm/@joint/core@4.1.3/dist/joint.
 <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.25.6/babel.min.js"></script>"""
 
 FONTS = {
-    "slate":    "IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Serif:ital,wght@0,400;1,400",
-    "terminal": "IBM+Plex+Mono:wght@400;500;600;700",
+    "slate":     "IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Serif:ital,wght@0,400;1,400",
+    "terminal":  "IBM+Plex+Mono:wght@400;500;600;700",
+    "neobrutal": "JetBrains+Mono:wght@400;500;700;800&family=Space+Grotesk:wght@500;600;700",
 }
 
 def read(p):

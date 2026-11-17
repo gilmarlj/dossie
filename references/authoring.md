@@ -88,6 +88,10 @@ não explicaria igual, corte.
 (fluxograma, árvore de decisão, sequência, hierarquia)? Veja
 `references/diagram-library.md` antes de inventar um shape do zero.
 
+**Dataset grande demais para literais inline no deck?** Veja
+`references/external-data.md` — fetch de JSON ao lado do `index.html`
+construído, separando estrutura/fato de texto traduzível por idioma.
+
 ## Idioma
 
 **Inglês é o padrão.** Escreva a peça em inglês salvo se
