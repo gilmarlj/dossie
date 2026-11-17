@@ -1,0 +1,30 @@
+README.md
+  h_40a91d631e8165 49-51
+SKILL.md
+  h_40a91d631e8165 53
+assets/base.css
+  h_40a91d631e8165 16-22,63-73,121-162,226-241,308-328
+assets/components.jsx
+  h_40a91d631e8165 7,9,91-93,97,143-163,212-220,222-229,571-577,579,582,588,601,606,613
+assets/themes/neobrutal.css
+  h_40a91d631e8165 1-166
+bin/build.py
+  h_40a91d631e8165 26-28
+references/authoring.md
+  h_40a91d631e8165 91-94
+references/components.md
+  h_40a91d631e8165 24,32,34-35,39-53,81,83-85,133-155
+references/external-data.md
+  h_40a91d631e8165 1-115
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.6",
+  "base_commit_sha": "c83804f0190646a3581bbfb69225c8b5127df658",
+  "prompts": {},
+  "humans": {
+    "h_40a91d631e8165": {
+      "author": "Gilmar Leal Junior <gilmarl@ext.inditex.com>"
+    }
+  }
+}
