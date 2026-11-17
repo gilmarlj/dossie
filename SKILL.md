@@ -50,7 +50,7 @@ fábrica e diga ao usuário que `/dossie:setup` os muda.
 ├─ assets/
 │  ├─ base.css      FIXO   todo o CSS de componente
 │  ├─ components.jsx FIXO  a biblioteca React
-│  └─ themes/              slate · terminal
+│  └─ themes/              slate · terminal · neobrutal
 ├─ references/
 │  ├─ components.md        API de cada componente
 │  ├─ authoring.md         como escrever o deck.jsx

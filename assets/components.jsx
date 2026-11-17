@@ -4,9 +4,9 @@
    estes componentes recebem por props.
 
    Primitivos de desenho: Box, T, Arrow (SVG com tokens de tema)
-   Blocos de conteúdo:    Chip, Code, Fig, Panel, DataTable
+   Blocos de conteúdo:    Chip, Code, Fig, Panel (collapsible opcional), DataTable
    Canvas interativo:     ErdCanvas (JointJS)
-   Estrutura de página:   Hero, Spine, Closing, ThemeToggle, LangToggle
+   Estrutura de página:   Hero, Spine, Closing, ThemeToggle, LangToggle, PrintButton
    ========================================================================= */
 
 const { useState, useRef, useEffect, useCallback } = React;
@@ -88,10 +88,13 @@ function useLang() {
  * Switch de dois estados. Clicar alterna; o lado aceso é o que vale agora.
  * `a` e `b` são [valor, rótulo].
  */
+/* Todo controle interativo de tela (Switch, PrintButton) leva .no-print: um
+   switch claro/escuro ou idioma, ou o botão que dispara a impressão, não faz
+   sentido na própria página impressa (ver base.css, seção "impressão"). */
 function Switch({ a, b, value, onChange, label }) {
   const isB = value === b[0];
   return (
-    <button className="sw" role="switch" aria-checked={isB} aria-label={label}
+    <button className="sw no-print" role="switch" aria-checked={isB} aria-label={label}
       onClick={() => onChange(isB ? a[0] : b[0])}>
       <span className={"sw-side" + (isB ? "" : " on")}>{a[1]}</span>
       <span className={"sw-side" + (isB ? " on" : "")}>{b[1]}</span>
@@ -137,12 +140,52 @@ function LangToggle({ lang, setLang }) {
   );
 }
 
+/**
+ * Botão que abre todo <Panel collapsible> da página antes de chamar
+ * window.print() — sem isso, um painel fechado imprime vazio (um <details>
+ * fechado não renderiza o conteúdo nem no papel). Os dois
+ * requestAnimationFrame encadeados dão tempo do navegador refazer o layout
+ * depois de abrir os <details> e antes do print() medir caixas — testado via
+ * Page.printToPDF do protocolo de depuração do Chrome.
+ */
+function PrintButton({ lang = "en" }) {
+  const print = () => {
+    document.querySelectorAll("details.collapsible").forEach(d => { d.open = true; });
+    requestAnimationFrame(() => requestAnimationFrame(() => window.print()));
+  };
+  return (
+    <button className="print-btn no-print" onClick={print}
+      aria-label={lang === "pt" ? "Imprimir / salvar em PDF" : "Print / save as PDF"}>
+      PDF
+    </button>
+  );
+}
+
 /* =========================================================================
    BLOCOS DE CONTEÚDO
    ========================================================================= */
 
 function Chip({ level, children }) {
   return <span className={"chip " + level}>{children}</span>;
+}
+
+/**
+ * Trilha lateral de uma seção (`<Mark>texto curto</Mark>`, ex. o ano de um
+ * período) — ponto + linha que conecta ao próximo card, só visível em
+ * telefone (<480px). É o par complementar ao índice do `<Spine>`: em telas
+ * maiores a cronologia vive só no índice da sidebar; em telefone o índice
+ * inteiro some e cada card ganha sua própria trilha, para nunca mostrar a
+ * mesma data duas vezes. Coloque como primeiro filho de `<section
+ * className="finding">` — `.finding:has(.f-mark)` vira um grid de duas
+ * colunas (trilha | conteúdo) automaticamente, sem props extras.
+ */
+function Mark({ children }) {
+  return (
+    <div className="f-mark">
+      <span className="f-mark-dot" />
+      <span className="f-mark-label">{children}</span>
+    </div>
+  );
 }
 
 /** Bloco de código com numeração real do arquivo e linhas destacadas. */
@@ -185,8 +228,24 @@ function Fig({ id, caption, children }) {
   );
 }
 
-function Panel({ title, tone = "", children }) {
+/**
+ * `collapsible` renderiza <details>/<summary> nativo em vez de <div> — abre e
+ * fecha sem JS, e some com um marcador +/− (CSS puro, ver base.css). Toda
+ * peça impressa via PrintButton força esses painéis abertos antes de
+ * window.print() (ver seção "Impressão" de references/components.md) — um
+ * painel collapsible nunca deve esconder conteúdo essencial à leitura em
+ * papel, só o que é opcional/expansível na tela.
+ */
+function Panel({ title, tone = "", collapsible = false, children }) {
   const t = useT();
+  if (collapsible) {
+    return (
+      <details className={"panel collapsible " + tone}>
+        <summary><h4>{t(title)}</h4></summary>
+        {children}
+      </details>
+    );
+  }
   return <div className={"panel " + tone}><h4>{t(title)}</h4>{children}</div>;
 }
 
@@ -528,8 +587,15 @@ function Hero({ eyebrow, title, lede, meta = [], board = [] }) {
  * Coluna lateral: marca, switches, índice. É a navegação inteira da peça —
  * não há barra no topo, que truncava os links em qualquer largura real.
  * `links` são atalhos fora do índice numerado (o mapa, "já correto").
+ * `printable` acrescenta o PrintButton na mesma linha dos switches.
+ *
+ * Duas visualizações, nunca as duas ao mesmo tempo (ver base.css): acima de
+ * 480px esta é a navegação inteira da peça, igual sempre foi; abaixo de
+ * 480px o índice inteiro some (só marca/switches ficam) e cada seção de
+ * conteúdo passa a ter sua própria trilha lateral via `<Mark>` — ver
+ * references/components.md.
  */
-function Spine({ sections, title, extra = [], brand, links = [] }) {
+function Spine({ sections, title, extra = [], brand, links = [], printable = false }) {
   const t = useT();
   const { lang, setLang, themeMode } = useLang();
   return (
@@ -537,6 +603,7 @@ function Spine({ sections, title, extra = [], brand, links = [] }) {
       <div className="spine-head">
         {brand && <span className="brandmark"><span className="dot" />{brand}</span>}
         <div className="controls">
+          {printable && <PrintButton lang={lang} />}
           {setLang && <LangToggle lang={lang} setLang={setLang} />}
           <ThemeToggle lang={lang} initial={themeMode} />
         </div>

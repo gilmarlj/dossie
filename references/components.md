@@ -21,7 +21,7 @@ string ou par. Nos seus próprios componentes:
 Abertura. `meta` é `[{k, v}]` e vira pílulas. `board` é `[{n, k, sub, tone}]` e vira o
 placar de números; `tone` é `crit | high | med | ok` ou omitido para a cor padrão.
 
-### `<Spine sections title extra brand links />`
+### `<Spine sections title extra brand links printable />`
 A navegação inteira da peça, em coluna fixa à esquerda: marca, switches
 (`EN|PT` só quando bilíngue, `LIGHT|DARK` sempre), atalhos e índice.
 
@@ -32,8 +32,39 @@ A navegação inteira da peça, em coluna fixa à esquerda: marca, switches
 | `sections` | o array `SECTIONS` |
 | `title` | rótulo acima do índice, ex. `L("Findings", "Achados")` |
 | `extra` | `[{href, title, sub}]` — itens avulsos no fim do índice |
+| `printable` | acrescenta o `PrintButton` na mesma linha dos switches |
 
 Rola com a página até grudar no topo; abaixo de 920px vira cabeçalho em grade.
+
+**Duas visualizações, nunca as duas ao mesmo tempo.** Acima de 480px este é o
+índice inteiro, como sempre foi. Abaixo de 480px (telefone) o rótulo por
+extenso de cada item não cabe sem quebrar palavra por palavra — em vez de
+comprimi-lo, **o índice inteiro some da sidebar** (só marca/switches
+continuam ali) e cada seção de conteúdo ganha sua própria trilha de
+cronologia via `<Mark>` (ver abaixo), ao lado do card. A impressão sempre usa
+o índice por extenso, mesmo que a página tenha sido aberta em telefone antes
+de imprimir.
+
+### `<Mark>texto</Mark>`
+Trilha lateral de uma seção — um ponto + a linha que conecta ao próximo card,
+com um rótulo curto (ex. só o ano de um período). Só aparece em telefone
+(<480px): é aí que `<Spine>` esconde o índice inteiro, e `<Mark>` é o lugar
+onde essa mesma cronologia reaparece — uma vez só, nunca nos dois ao mesmo
+tempo. Ponha como **primeiro filho** de `<section className="finding">`,
+fora do `.f-head`: a regra `.finding:has(.f-mark)` detecta sozinha e vira um
+grid de duas colunas (trilha | conteúdo), sem precisar de nenhuma prop ou
+classe extra na seção.
+
+```jsx
+<section className="finding" id="f1">
+  <Mark>2023</Mark>
+  <div className="f-head">
+    <Chip level="ghost">{exp.company}</Chip>
+    <h2>{exp.role}</h2>
+  </div>
+  {/* ...resto da seção... */}
+</section>
+```
 
 ### `<Closing eyebrow title intro rows footer />`
 Fechamento. `rows` é `[{n, what, effort}]`, onde `what` aceita JSX.
@@ -62,8 +93,11 @@ aparece na coluna da esquerda.
 ### `<Fig id caption>{svg}</Fig>`
 Moldura para um SVG desenhado à mão. `id` vira o rótulo em maiúsculas (`"Fig. 2"`).
 
-### `<Panel title tone>{...}</Panel>`
+### `<Panel title tone collapsible>{...}</Panel>`
 Caixa com barra lateral. `tone="ok"` pinta a barra de verde (use para correções).
+`collapsible` renderiza `<details>`/`<summary>` nativo em vez de `<div>` — abre
+e fecha sem JS, com um marcador `+`/`−` (CSS puro). Veja "Impressão" abaixo
+para a regra sobre o que acontece com esse painel no papel.
 
 ### `<DataTable head rows wrapFirst />`
 `head` é array de strings; `rows` é array de arrays (células aceitam JSX). A primeira
@@ -111,3 +145,26 @@ rende a palavra do meio como `<code>`.
 Deixe pelo menos 90px verticais entre caixas que se ligam, senão o roteador manhattan
 cruza por cima delas. Labels longos invadem as caixas vizinhas — prefira duas ou três
 palavras.
+
+## Impressão
+
+### `<PrintButton lang />`
+Botão "PDF". Ao clicar, abre todo `<Panel collapsible>` da página e chama
+`window.print()` logo em seguida — um painel fechado imprimiria vazio, já que
+um `<details>` fechado não renderiza o conteúdo nem no papel. Normalmente não
+se usa isolado: passe `printable` ao `<Spine>` (acima), que já o posiciona na
+linha dos switches.
+
+**O que sempre some no papel (`.no-print`):** `ThemeToggle`, `LangToggle` e o
+próprio `PrintButton` — nenhum dos três faz sentido numa página estática.
+Use a classe `.no-print` em qualquer elemento seu que só sirva à tela.
+
+**O que sempre sai aberto:** todo `<Panel collapsible>` — o botão força isso
+antes de imprimir, então não escreva conteúdo opcional-de-verdade dentro de um
+painel colapsável achando que ele pode ficar fechado no PDF; ele não fica.
+
+**O que o tema controla:** a paleta impressa (clara ou escura) fica a
+critério de cada `assets/themes/*.css` — `base.css` nunca declara cor, só
+neutraliza layout (`.cols` vira uma coluna, `.spine` perde o `sticky`/scroll,
+sombras somem). Se seu tema usa sombra dura ou qualquer decoração que
+desperdiça tinta, zere-a dentro do próprio `@media print` do tema.

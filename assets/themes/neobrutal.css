@@ -1,0 +1,166 @@
+/* =========================================================================
+   TEMA: neobrutal
+   @label: Neobrutal (Win98)
+   @desc:  Sombra dura neubrutalist + bisel de controle estilo Windows 98, acento roxo/verde (magenta raro).
+   Mistura duas referências: a sombra offset sem blur e cantos retos de
+   neubrutalism.com, com o truque de borda em bisel (raised — luz vindo de
+   cima-esquerda) do 98.css aplicado aos controles interativos fixos do
+   template (Switch, base de ThemeToggle/LangToggle; PrintButton).
+   ========================================================================= */
+
+:root {
+  --bg:        #0b0b0d;
+  --surface:   #1a1a1d;
+  --surface-2: #242428;
+  --ink:       #f5f5f0;
+  --ink-2:     #c9c9c2;
+  --ink-3:     #8f8f88;
+  --line:      #f5f5f0;
+  --line-soft: #3a3a3e;
+  --code-bg:   #000000;
+  /* Acento principal: roxo. Verde entra como segunda cor de destaque
+     (severidade med/ok, hover). Magenta existe só em --crit — raro no uso
+     normal de uma peça, onde a maioria dos achados não é crítica. */
+  --accent:    #9b59ff;
+  --accent-bg: #1f1440;
+  --crit:      #ff2bd6;
+  --crit-bg:   #2d0027;
+  --high:      #7c3aed;
+  --high-bg:   #1a1033;
+  --med:       #00e68a;
+  --med-bg:    #0a2e1e;
+  --ok:        #00e68a;
+  --ok-bg:     #0a2e1e;
+
+  /* Forma: cantos retos, borda grossa — a marca do neobrutalismo */
+  --radius:       0px;
+  --radius-sm:    0px;
+  --radius-pill:  0px;
+  --border:       3px;
+  --tracking-label: .12em;
+
+  /* Bisel estilo Win98: claro em cima/esquerda, escuro embaixo/direita
+     (raised). Usado só nos controles interativos abaixo. */
+  --bevel-lo: #000000;
+  --bevel-hi: #ffffff;
+
+  --font-sans:  "Space Grotesk", "Arial Black", Tahoma, sans-serif;
+  --font-mono:  "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  --font-serif: "Space Grotesk", "Arial Black", Tahoma, sans-serif;
+
+  color-scheme: dark;
+}
+
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    --bg:          #eeeeee;
+    --surface:     #ffffff;
+    --surface-2:   #e2e2e2;
+    --ink:         #0a0a0a;
+    --ink-2:       #3a3a3a;
+    --ink-3:       #6a6a6a;
+    --line:        #000000;
+    --line-soft:   #bbbbbb;
+    --code-bg:     #ffffff;
+    --accent:      #6c2bd9;
+    --accent-bg:   #ece0ff;
+    --crit:        #b8008f;
+    --crit-bg:     #ffe0f5;
+    --high:        #5b21b6;
+    --high-bg:     #ece0ff;
+    --med:         #00883e;
+    --med-bg:      #dcffe9;
+    --ok:          #00883e;
+    --ok-bg:       #dcffe9;
+    --bevel-lo:    #ffffff;
+    --bevel-hi:    #000000;
+    color-scheme: light;
+  }
+}
+:root[data-theme="light"] {
+  --bg:          #eeeeee;
+  --surface:     #ffffff;
+  --surface-2:   #e2e2e2;
+  --ink:         #0a0a0a;
+  --ink-2:       #3a3a3a;
+  --ink-3:       #6a6a6a;
+  --line:        #000000;
+  --line-soft:   #bbbbbb;
+  --code-bg:     #ffffff;
+  --accent:      #6c2bd9;
+  --accent-bg:   #ece0ff;
+  --crit:        #b8008f;
+  --crit-bg:     #ffe0f5;
+  --high:        #5b21b6;
+  --high-bg:     #ece0ff;
+  --med:         #00883e;
+  --med-bg:      #dcffe9;
+  --ok:          #00883e;
+  --ok-bg:       #dcffe9;
+  --bevel-lo:    #ffffff;
+  --bevel-hi:    #000000;
+  color-scheme: light;
+}
+
+/* =========================================================================
+   NEUBRUTALISM — sombra dura offset, sem blur, aplicada a componentes já
+   existentes no template (nenhuma classe nova é criada neste bloco).
+   ========================================================================= */
+.board-cell { box-shadow: 6px 6px 0 0 var(--ink); }
+.panel      { box-shadow: 6px 6px 0 0 var(--ink); border-left-width: var(--border); }
+.chip       { border: 2px solid var(--line); }
+.chip.ghost { border-width: 2px; }
+.meta       { box-shadow: 3px 3px 0 0 var(--ink); }
+.code, .fig, .tbl-wrap, .erd { box-shadow: 6px 6px 0 0 var(--ink); }
+
+/* hover: levanta na direção contrária à sombra (padrão neubrutalism.com),
+   com o contorno virando verde — sinal único de "isto é clicável". */
+.spine-item, .erd-btn, .spine-link, .panel.collapsible > summary,
+.print-btn, .sw {
+  transition: transform .08s ease, box-shadow .08s ease, border-color .08s ease;
+}
+.spine-item:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 4px 4px 0 0 var(--ink);
+  background: var(--surface);
+  border-color: var(--med);
+}
+.spine-link:hover, .erd-btn:hover { border-color: var(--med); color: var(--ink); }
+.panel.collapsible:hover { border-left-color: var(--med); }
+.panel.collapsible > summary:hover::before { border-color: var(--med); color: var(--med); }
+
+/* =========================================================================
+   WIN98 BEVEL — raised (truque do 98.css: duas cores de borda opostas
+   simulam luz vindo de cima-esquerda). Aplicado ao Switch (base de
+   ThemeToggle/LangToggle) e ao PrintButton — mesmo visual chapado nos três,
+   um retângulo de borda só, sem o afundamento Win98 clássico no lado aceso
+   (o lado ativo do Switch vira destaque de cor sólida em vez disso).
+   ========================================================================= */
+.sw {
+  border: 2px solid;
+  border-top-color: var(--bevel-hi);
+  border-left-color: var(--bevel-hi);
+  border-right-color: var(--bevel-lo);
+  border-bottom-color: var(--bevel-lo);
+  box-shadow: none;
+}
+.sw-side.on { background: var(--accent); }
+.sw:hover { border-color: var(--med); }
+
+.print-btn {
+  border: 2px solid;
+  border-top-color: var(--bevel-hi); border-left-color: var(--bevel-hi);
+  border-right-color: var(--bevel-lo); border-bottom-color: var(--bevel-lo);
+  box-shadow: none;
+}
+.print-btn:hover { border-color: var(--med); color: var(--ink); }
+.print-btn:active {
+  border-top-color: var(--bevel-lo); border-left-color: var(--bevel-lo);
+  border-right-color: var(--bevel-hi); border-bottom-color: var(--bevel-hi);
+}
+
+/* ---------- Hero mais compacto: combina com o resto do tema, denso e
+   monoespaçado — specificity extra (html ...) vence o base.css mesmo vindo
+   depois dele no HTML final ---------- */
+html .hero h1 { font-size: clamp(26px, 4.4vw, 42px); }
+html .hero .lede { font-size: 15px; }
