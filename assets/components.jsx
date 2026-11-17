@@ -169,6 +169,19 @@ function Chip({ level, children }) {
   return <span className={"chip " + level}>{children}</span>;
 }
 
+/**
+ * Marca de cronologia para dentro de `.f-head` (`<Mark>{s.compact}</Mark>`,
+ * mesmo `compact` passado a `<Spine sections>`). Some em qualquer largura
+ * exceto telefone (<480px) — é o par complementar à timeline do `<Spine>`:
+ * lá a cronologia vive só no índice (telas largas) ou só aqui, dentro do
+ * card (telefone), nunca nos dois ao mesmo tempo. Sem isso, a tela estreita
+ * mostraria a mesma data duas vezes — uma no índice compacto, outra no
+ * corpo do card logo abaixo.
+ */
+function Mark({ children }) {
+  return <span className="f-mark">{children}</span>;
+}
+
 /** Bloco de código com numeração real do arquivo e linhas destacadas. */
 function Code({ path, lang = "", start = 1, lines, hl = [], good = [], note }) {
   const t = useT();

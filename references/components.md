@@ -36,19 +36,41 @@ A navegação inteira da peça, em coluna fixa à esquerda: marca, switches
 
 Rola com a página até grudar no topo; abaixo de 920px vira cabeçalho em grade.
 
-**Índice responsivo — timeline compacta.** Abaixo de 480px o rótulo por
-extenso de cada item não cabe sem quebrar palavra por palavra. Dê a cada
-entrada de `sections`/`extra` um `compact` (string curta, ex. só o ano de um
-período) e o índice vira uma timeline vertical nessa largura: um marcador por
-item — quadrado ou redondo conforme o `--radius-pill` do tema — ligados por
-uma linha, com `compact` ao lado em vez do rótulo completo. Sem `compact` em
-nenhuma entrada, o índice se comporta como sempre (nunca ativa o modo
-timeline). O item inteiro continua clicável; o texto completo permanece no
-DOM (`.spine-rank`/`.spine-txt`) para leitor de tela e para a impressão, que
-sempre reverte para o rótulo por extenso.
+**Índice responsivo — nunca a mesma data duas vezes.** `compact` (string
+curta, ex. só o ano de um período) tem um comportamento por tamanho de tela:
+
+- **Lado a lado / coluna única larga (≥480px):** `compact` não aparece no
+  índice — o rótulo vai por extenso (`.spine-rank` + `.spine-txt`), e é
+  também aqui que o conteúdo principal mostra o card inteiro, sem repetir a
+  data.
+- **Telefone (<480px):** o rótulo por extenso não cabe sem quebrar palavra
+  por palavra. Em vez de tentar os dois ao mesmo tempo, o índice **some da
+  sidebar** (fica só marca/switches) e `compact` migra para dentro de cada
+  card, via `<Mark>` (ver abaixo) — a cronologia passa a viver uma única vez,
+  junto do conteúdo, não duplicada entre índice e card.
+
+Sem `compact` em nenhuma entrada, nada disso ativa — o índice se comporta
+como sempre em toda largura. O item do índice continua clicável e o texto
+completo permanece no DOM para leitor de tela; a impressão sempre usa o
+índice por extenso (`@media print` reverte o modo telefone).
 
 ```js
 sections = [{ id, rank: "2023 - 2026", short: "Role title", sev: "Company", compact: "2023" }]
+```
+
+### `<Mark>texto</Mark>`
+Par complementar ao `compact` do `<Spine>` acima: ponha dentro do `.f-head`
+de cada seção, com o mesmo valor de `compact` daquela entrada. Fica invisível
+em qualquer largura exceto telefone (<480px) — é exatamente aí que o índice
+lateral esconde a mesma informação, então a marca aparece no card no lugar
+dela, nunca nos dois ao mesmo tempo.
+
+```jsx
+<div className="f-head">
+  <Chip level="ghost">{exp.company}</Chip>
+  <h2>{exp.role}</h2>
+  <Mark>{exp.compact}</Mark>
+</div>
 ```
 
 ### `<Closing eyebrow title intro rows footer />`

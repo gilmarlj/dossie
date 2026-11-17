@@ -131,33 +131,35 @@ a { color: inherit; }
   .spine-nav { display:grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); }
 }
 
-/* ---------- índice compacto: abaixo de 480px (ainda dentro da coluna única
-   do breakpoint acima) o rótulo por extenso (.spine-rank + .spine-txt) não
-   cabe sem quebrar palavra por palavra. `<Spine>` então vira uma timeline
-   vertical: um marcador quadrado/redondo (conforme --radius-pill do tema)
-   por item, ligados por uma linha, com só um rótulo curto ao lado
-   (.spine-compact — o campo opcional `compact` de cada entrada de
-   `sections`/`extra`; ver references/components.md). Sem `compact`, o item
-   cai de volta no `.spine-rank` por extenso, só que sem a timeline. ---------- */
+/* ---------- índice vs. timeline embutida: dois tamanhos de tela diferentes,
+   nunca a mesma cronologia duas vezes.
+
+   - Lado a lado (>920px): sidebar fixa com o índice completo ao lado do
+     conteúdo (.cols de duas colunas, já no bloco acima).
+   - Coluna única, ainda larga o bastante (480–920px): sidebar empilhada
+     acima do conteúdo, índice por extenso — ver bloco acima.
+   - Telefone (<480px): o índice por extenso não cabe sem quebrar palavra
+     por palavra, e repeti-lo como timeline na sidebar DUPLICARIA a mesma
+     cronologia que já aparece em cada card logo abaixo. Em vez de
+     comprimir o índice, ele some da sidebar (.spine-nav.timeline vira
+     display:none — só marca/switches continuam ali), e cada seção de
+     conteúdo (`.finding`) passa a exibir sua própria marca: um ponto
+     quadrado/redondo (conforme --radius-pill do tema) + o rótulo curto
+     (`.f-mark` dentro de `.f-head`; ver references/components.md). O dado
+     é o mesmo `compact` que alimenta o índice — `.f-mark` só aparece aqui
+     embaixo de 480px, pelo motivo oposto de `.spine-compact` acima. ---------- */
+.f-mark {
+  display: none; align-items: center; gap: 6px; font-family: var(--font-mono);
+  font-size: 10.5px; color: var(--ink-2); order: -1; flex-basis: 100%;
+}
+.f-mark::before {
+  content: ""; width: 8px; height: 8px; flex: none;
+  background: var(--ink-3); border: 1.5px solid var(--line);
+  border-radius: var(--radius-pill, 999px);
+}
 @media (max-width: 480px) {
-  .spine-nav.timeline { position: relative; padding-left: 18px; }
-  .spine-nav.timeline::before {
-    content: ""; position: absolute; left: 3px; top: 4px; bottom: 4px;
-    width: 2px; background: var(--line-soft);
-  }
-  .spine-nav.timeline .spine-item {
-    position: relative; padding: 4px 0 4px 10px; border: none; background: none !important;
-    align-items: center;
-  }
-  .spine-nav.timeline .spine-txt, .spine-nav.timeline .spine-rank { display: none; }
-  .spine-nav.timeline .spine-item::before {
-    content: ""; position: absolute; left: -19px; top: 50%; margin-top: -4px;
-    width: 8px; height: 8px; background: var(--ink-3); border: 1.5px solid var(--line);
-    border-radius: var(--radius-pill, 999px);
-  }
-  .spine-nav.timeline .spine-item:hover::before { background: var(--accent); }
-  .spine-compact { display: none; font-family: var(--font-mono); font-size: 10.5px; color: var(--ink-2); }
-  .spine-nav.timeline .spine-compact { display: block; }
+  .spine-nav.timeline { display: none; }
+  .f-mark { display: flex; }
 }
 
 /* ---------- seção ---------- */
