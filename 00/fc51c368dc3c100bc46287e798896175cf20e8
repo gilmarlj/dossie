@@ -1,0 +1,18 @@
+assets/base.css
+  h_40a91d631e8165 134,136-138,140-150,152-180,339-343
+assets/components.jsx
+  h_40a91d631e8165 173-180,183-188,592-596,619
+references/components.md
+  h_40a91d631e8165 32,34,39-46,49-56,59-66
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.6",
+  "base_commit_sha": "00fc51c368dc3c100bc46287e798896175cf20e8",
+  "prompts": {},
+  "humans": {
+    "h_40a91d631e8165": {
+      "author": "Gilmar Leal Junior <gilmarl@ext.inditex.com>"
+    }
+  }
+}
