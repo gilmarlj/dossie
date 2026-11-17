@@ -131,35 +131,53 @@ a { color: inherit; }
   .spine-nav { display:grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); }
 }
 
-/* ---------- índice vs. timeline embutida: dois tamanhos de tela diferentes,
-   nunca a mesma cronologia duas vezes.
+/* ---------- duas visualizações, nunca a mesma cronologia duas vezes.
 
-   - Lado a lado (>920px): sidebar fixa com o índice completo ao lado do
-     conteúdo (.cols de duas colunas, já no bloco acima).
-   - Coluna única, ainda larga o bastante (480–920px): sidebar empilhada
-     acima do conteúdo, índice por extenso — ver bloco acima.
+   - Desktop (>=480px): sidebar com o índice completo (lado a lado acima de
+     920px, empilhada acima do conteúdo entre 480–920px) — como sempre foi.
+     `.f-mark`/`<Mark>` não aparece em lugar nenhum nesta largura.
    - Telefone (<480px): o índice por extenso não cabe sem quebrar palavra
-     por palavra, e repeti-lo como timeline na sidebar DUPLICARIA a mesma
-     cronologia que já aparece em cada card logo abaixo. Em vez de
-     comprimir o índice, ele some da sidebar (.spine-nav.timeline vira
-     display:none — só marca/switches continuam ali), e cada seção de
-     conteúdo (`.finding`) passa a exibir sua própria marca: um ponto
-     quadrado/redondo (conforme --radius-pill do tema) + o rótulo curto
-     (`.f-mark` dentro de `.f-head`; ver references/components.md). O dado
-     é o mesmo `compact` que alimenta o índice — `.f-mark` só aparece aqui
-     embaixo de 480px, pelo motivo oposto de `.spine-compact` acima. ---------- */
-.f-mark {
-  display: none; align-items: center; gap: 6px; font-family: var(--font-mono);
-  font-size: 10.5px; color: var(--ink-2); order: -1; flex-basis: 100%;
-}
-.f-mark::before {
-  content: ""; width: 8px; height: 8px; flex: none;
-  background: var(--ink-3); border: 1.5px solid var(--line);
-  border-radius: var(--radius-pill, 999px);
-}
+     por palavra. Em vez de comprimi-lo na sidebar (que duplicaria a mesma
+     cronologia do card logo abaixo), o índice INTEIRO some da sidebar
+     (`.spine-nav` vira `display:none`; só marca/switches continuam ali) e
+     cada seção de conteúdo (`.finding`) ganha uma trilha própria ao lado:
+     um ponto + a linha que conecta ao próximo card, usando o mesmo valor
+     que alimentava o índice, agora dentro de `<Mark>` (ver
+     references/components.md). `.finding:has(.f-mark)` vira um grid de
+     duas colunas — a trilha à esquerda, o conteúdo inteiro (título
+     incluso) à direita, sem que a marca entre no `.f-head` ou empurre o
+     título. ---------- */
+.f-mark { display: none; }
 @media (max-width: 480px) {
-  .spine-nav.timeline { display: none; }
-  .f-mark { display: flex; }
+  .spine-nav, .spine-title { display: none; }
+  .finding:has(.f-mark) {
+    display: grid; grid-template-columns: 40px 1fr; column-gap: 12px;
+    position: relative;
+  }
+  .finding:has(.f-mark) > :not(.f-mark) { grid-column: 2; }
+  .f-mark {
+    display: flex; flex-direction: column; align-items: center; gap: 4px;
+    grid-column: 1; grid-row: 1 / -1; position: relative; padding-top: 2px;
+  }
+  .f-mark::before {
+    /* a linha: sobe e desce além da marca, encostando no card vizinho
+       (a metade do gap de 56px entre .finding dentro de .stack) */
+    content: ""; position: absolute; left: 50%; margin-left: -1px;
+    top: -28px; bottom: -28px; width: 2px; background: var(--line-soft);
+    z-index: 0;
+  }
+  .finding:first-child .f-mark::before { top: 18px; }
+  .finding:last-child .f-mark::before { bottom: calc(100% - 18px); }
+  .f-mark-dot {
+    width: 16px; height: 16px; flex: none; position: relative; z-index: 1;
+    background: var(--ink-3); border: 1.5px solid var(--line);
+    border-radius: var(--radius-pill, 999px);
+  }
+  .f-mark-label {
+    font-family: var(--font-mono); font-size: 9.5px; color: var(--ink-2);
+    white-space: nowrap; position: relative; z-index: 1;
+    background: var(--bg); padding: 0 2px;
+  }
 }
 
 /* ---------- seção ---------- */
@@ -318,10 +336,11 @@ footer { border-top: var(--border, 1px) solid var(--line); padding-block: 22px 3
      tema decide a paleta clara/escura do papel — base.css não assume cor. */
   .cols { grid-template-columns: 1fr !important; }
   .spine { position: static !important; max-height: none !important; overflow: visible !important; }
-  .spine-nav.timeline { padding-left: 0; }
-  .spine-nav.timeline::before, .spine-nav.timeline .spine-item::before { display: none; }
-  .spine-nav.timeline .spine-txt, .spine-nav.timeline .spine-rank { display: block; }
-  .spine-compact { display: none !important; }
+  /* a visualização de telefone (índice some, trilha no card) nunca deve
+     aparecer no papel — reverte sempre para o índice inteiro. */
+  .spine-nav { display: flex !important; }
+  .finding:has(.f-mark) { display: block !important; }
+  .f-mark { display: none !important; }
   /* <Panel collapsible> sempre sai aberto — ver references/components.md
      "Impressão": o <PrintButton> força details.open=true antes de chamar
      window.print(); aqui só escondemos o marcador +/− fictício, que não faz

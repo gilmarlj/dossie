@@ -29,48 +29,41 @@ A navegação inteira da peça, em coluna fixa à esquerda: marca, switches
 |---|---|
 | `brand` | rótulo curto no topo, ex. `"dossie"` |
 | `links` | `[{href, label}]` — atalhos fora do índice numerado (o mapa) |
-| `sections` | o array `SECTIONS` — cada item aceita um `compact` opcional (ver abaixo) |
+| `sections` | o array `SECTIONS` |
 | `title` | rótulo acima do índice, ex. `L("Findings", "Achados")` |
-| `extra` | `[{href, title, sub}]` — itens avulsos no fim do índice; aceita `compact` também |
+| `extra` | `[{href, title, sub}]` — itens avulsos no fim do índice |
 | `printable` | acrescenta o `PrintButton` na mesma linha dos switches |
 
 Rola com a página até grudar no topo; abaixo de 920px vira cabeçalho em grade.
 
-**Índice responsivo — nunca a mesma data duas vezes.** `compact` (string
-curta, ex. só o ano de um período) tem um comportamento por tamanho de tela:
-
-- **Lado a lado / coluna única larga (≥480px):** `compact` não aparece no
-  índice — o rótulo vai por extenso (`.spine-rank` + `.spine-txt`), e é
-  também aqui que o conteúdo principal mostra o card inteiro, sem repetir a
-  data.
-- **Telefone (<480px):** o rótulo por extenso não cabe sem quebrar palavra
-  por palavra. Em vez de tentar os dois ao mesmo tempo, o índice **some da
-  sidebar** (fica só marca/switches) e `compact` migra para dentro de cada
-  card, via `<Mark>` (ver abaixo) — a cronologia passa a viver uma única vez,
-  junto do conteúdo, não duplicada entre índice e card.
-
-Sem `compact` em nenhuma entrada, nada disso ativa — o índice se comporta
-como sempre em toda largura. O item do índice continua clicável e o texto
-completo permanece no DOM para leitor de tela; a impressão sempre usa o
-índice por extenso (`@media print` reverte o modo telefone).
-
-```js
-sections = [{ id, rank: "2023 - 2026", short: "Role title", sev: "Company", compact: "2023" }]
-```
+**Duas visualizações, nunca as duas ao mesmo tempo.** Acima de 480px este é o
+índice inteiro, como sempre foi. Abaixo de 480px (telefone) o rótulo por
+extenso de cada item não cabe sem quebrar palavra por palavra — em vez de
+comprimi-lo, **o índice inteiro some da sidebar** (só marca/switches
+continuam ali) e cada seção de conteúdo ganha sua própria trilha de
+cronologia via `<Mark>` (ver abaixo), ao lado do card. A impressão sempre usa
+o índice por extenso, mesmo que a página tenha sido aberta em telefone antes
+de imprimir.
 
 ### `<Mark>texto</Mark>`
-Par complementar ao `compact` do `<Spine>` acima: ponha dentro do `.f-head`
-de cada seção, com o mesmo valor de `compact` daquela entrada. Fica invisível
-em qualquer largura exceto telefone (<480px) — é exatamente aí que o índice
-lateral esconde a mesma informação, então a marca aparece no card no lugar
-dela, nunca nos dois ao mesmo tempo.
+Trilha lateral de uma seção — um ponto + a linha que conecta ao próximo card,
+com um rótulo curto (ex. só o ano de um período). Só aparece em telefone
+(<480px): é aí que `<Spine>` esconde o índice inteiro, e `<Mark>` é o lugar
+onde essa mesma cronologia reaparece — uma vez só, nunca nos dois ao mesmo
+tempo. Ponha como **primeiro filho** de `<section className="finding">`,
+fora do `.f-head`: a regra `.finding:has(.f-mark)` detecta sozinha e vira um
+grid de duas colunas (trilha | conteúdo), sem precisar de nenhuma prop ou
+classe extra na seção.
 
 ```jsx
-<div className="f-head">
-  <Chip level="ghost">{exp.company}</Chip>
-  <h2>{exp.role}</h2>
-  <Mark>{exp.compact}</Mark>
-</div>
+<section className="finding" id="f1">
+  <Mark>2023</Mark>
+  <div className="f-head">
+    <Chip level="ghost">{exp.company}</Chip>
+    <h2>{exp.role}</h2>
+  </div>
+  {/* ...resto da seção... */}
+</section>
 ```
 
 ### `<Closing eyebrow title intro rows footer />`

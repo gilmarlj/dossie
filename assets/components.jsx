@@ -170,16 +170,22 @@ function Chip({ level, children }) {
 }
 
 /**
- * Marca de cronologia para dentro de `.f-head` (`<Mark>{s.compact}</Mark>`,
- * mesmo `compact` passado a `<Spine sections>`). Some em qualquer largura
- * exceto telefone (<480px) — é o par complementar à timeline do `<Spine>`:
- * lá a cronologia vive só no índice (telas largas) ou só aqui, dentro do
- * card (telefone), nunca nos dois ao mesmo tempo. Sem isso, a tela estreita
- * mostraria a mesma data duas vezes — uma no índice compacto, outra no
- * corpo do card logo abaixo.
+ * Trilha lateral de uma seção (`<Mark>texto curto</Mark>`, ex. o ano de um
+ * período) — ponto + linha que conecta ao próximo card, só visível em
+ * telefone (<480px). É o par complementar ao índice do `<Spine>`: em telas
+ * maiores a cronologia vive só no índice da sidebar; em telefone o índice
+ * inteiro some e cada card ganha sua própria trilha, para nunca mostrar a
+ * mesma data duas vezes. Coloque como primeiro filho de `<section
+ * className="finding">` — `.finding:has(.f-mark)` vira um grid de duas
+ * colunas (trilha | conteúdo) automaticamente, sem props extras.
  */
 function Mark({ children }) {
-  return <span className="f-mark">{children}</span>;
+  return (
+    <div className="f-mark">
+      <span className="f-mark-dot" />
+      <span className="f-mark-label">{children}</span>
+    </div>
+  );
 }
 
 /** Bloco de código com numeração real do arquivo e linhas destacadas. */
@@ -583,16 +589,15 @@ function Hero({ eyebrow, title, lede, meta = [], board = [] }) {
  * `links` são atalhos fora do índice numerado (o mapa, "já correto").
  * `printable` acrescenta o PrintButton na mesma linha dos switches.
  *
- * Cada entrada de `sections`/`extra` aceita um `compact` opcional (string
- * curta, ex. só o ano de um período) — abaixo de 480px o índice vira uma
- * timeline vertical (um marcador por item, ligado por uma linha) e mostra
- * `compact` no lugar do rótulo por extenso. Sem `compact` em nenhuma
- * entrada, o índice não ativa o modo timeline e se comporta como sempre.
+ * Duas visualizações, nunca as duas ao mesmo tempo (ver base.css): acima de
+ * 480px esta é a navegação inteira da peça, igual sempre foi; abaixo de
+ * 480px o índice inteiro some (só marca/switches ficam) e cada seção de
+ * conteúdo passa a ter sua própria trilha lateral via `<Mark>` — ver
+ * references/components.md.
  */
 function Spine({ sections, title, extra = [], brand, links = [], printable = false }) {
   const t = useT();
   const { lang, setLang, themeMode } = useLang();
-  const hasCompact = sections.some(s => s.compact) || extra.some(e => e.compact);
   return (
     <aside className="spine">
       <div className="spine-head">
@@ -611,19 +616,17 @@ function Spine({ sections, title, extra = [], brand, links = [], printable = fal
         </div>
       )}
       <div className="spine-title">{t(title)}</div>
-      <div className={"spine-nav" + (hasCompact ? " timeline" : "")}>
+      <div className="spine-nav">
         {sections.map(s => (
           <a className="spine-item" href={"#" + s.id} key={s.id}>
             <span className="spine-rank">{s.rank}</span>
             <span className="spine-txt"><b>{t(s.short)}</b>{t(s.sev)}</span>
-            {s.compact && <span className="spine-compact">{t(s.compact)}</span>}
           </a>
         ))}
         {extra.map(e => (
           <a className="spine-item" href={e.href} key={e.href}>
             <span className="spine-rank">—</span>
             <span className="spine-txt"><b>{t(e.title)}</b>{t(e.sub)}</span>
-            {e.compact && <span className="spine-compact">{t(e.compact)}</span>}
           </a>
         ))}
       </div>
