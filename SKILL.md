@@ -1,6 +1,6 @@
 ---
 name: dossie
-description: Gera peças de documentação técnica em HTML para apresentar ao time — análise de código, ADR, postmortem — com diagramas interativos (JointJS), código anotado por linha, modo claro/escuro em um botão de 3 estados e saída EN/PT/ambos em outro. O CSS e os componentes React são um template fixo local; a skill escreve apenas os dados. Tema, idioma e destino saem de um YAML configurável. Também compacta uma peça já construída num .zip para enviar. Use quando pedirem "gera uma página com essa análise", "documenta isso para apresentar", "monta um ADR", "escreve o postmortem", "compacta esse dossiê", "zip da peça pra mandar", ou após produzir uma análise que o usuário vai apresentar.
+description: Gera peças de documentação técnica em HTML para apresentar ao time — análise de código, ADR, postmortem, sprint review — com diagramas interativos (JointJS), código anotado por linha, modo claro/escuro em um botão de 3 estados e saída EN/PT/ambos em outro. O CSS e os componentes React são um template fixo local; a skill escreve apenas os dados. Tema, idioma e destino saem de um YAML configurável. Também compacta uma peça já construída num .zip para enviar. Use quando pedirem "gera uma página com essa análise", "documenta isso para apresentar", "monta um ADR", "escreve o postmortem", "adapta essa apresentação de sprint review", "compacta esse dossiê", "zip da peça pra mandar", ou após produzir uma análise que o usuário vai apresentar.
 ---
 
 # dossie
@@ -20,6 +20,7 @@ a maior parte dos tokens e garante que tudo saia com o mesmo padrão.
 | `/dossie:analysis` | análise de código/arquitetura com achados severados |
 | `/dossie:adr` | registro de decisão arquitetural |
 | `/dossie:postmortem` | incidente: linha do tempo, causa raiz, ações |
+| `/dossie:sprint-review` | apresentação de sprint review: team updates, goal & scope, deliverables, demo, métricas, blockers |
 | `/dossie:new-theme` | cria uma paleta nova em `assets/themes/` |
 | `/dossie:to-zip` | compacta uma peça já construída num `.zip` para enviar |
 
@@ -40,6 +41,7 @@ fábrica e diga ao usuário que `/dossie:setup` os muda.
 │  ├─ analysis.md          análise de código/arquitetura
 │  ├─ adr.md               decisão arquitetural
 │  ├─ postmortem.md        incidente
+│  ├─ sprint-review.md     apresentação de sprint review
 │  ├─ new-theme.md        criar uma paleta
 │  └─ to-zip.md            compactar uma peça para enviar
 ├─ bin/
@@ -114,8 +116,10 @@ docs/
 │     └─ data/           json/csv que alimentam gráficos
 ├─ adr/
 │  └─ 007-event-contract-versioning/
-└─ postmortems/
-   └─ 2026-11-kafka-lag/
+├─ postmortems/
+│  └─ 2026-11-kafka-lag/
+└─ reviews/
+   └─ sprint-14-review/
 ```
 
 Com `output.naming: infer`, o nome da pasta é um slug curto em kebab-case que
