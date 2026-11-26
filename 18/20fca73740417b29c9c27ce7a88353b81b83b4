@@ -1,0 +1,16 @@
+SKILL.md
+  h_40a91d631e8165 3,23,44,119-122
+flows/sprint-review.md
+  h_40a91d631e8165 1-97
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.6",
+  "base_commit_sha": "1820fca73740417b29c9c27ce7a88353b81b83b4",
+  "prompts": {},
+  "humans": {
+    "h_40a91d631e8165": {
+      "author": "Gilmar Leal Junior <gilmarl@ext.inditex.com>"
+    }
+  }
+}
